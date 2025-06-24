@@ -21,8 +21,8 @@ public interface StudentService {
 
     List<StudentDto> findStudentsByName(String name);
 
-    Long countStudentsWithNamesIn(Set<String> names);
+    Long countStudentsByNames(Set<String> names);
 
-    List<StudentDto> findStudentsByExamNameAndMinScore(String examName, Integer minScore);
+    List<StudentDto> findStudentsByExamNameMinScore(String examName, Integer minScore);
 
 }
