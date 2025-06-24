@@ -139,14 +139,13 @@ public class StudentServiceTest {
         assertEquals(password, studentCredentialsDto.getPassword());
         verify(studentRepository, times(1)).save(any(Student.class));
     }
+
     @Test
     void testAddScoreWhenStudentExists() {
         // Arrange
         String examName = "Math";
         Integer score = 95;
-        ScoreDto scoreDto = new ScoreDto();
-        // Use reflection or create object through constructor if available
-        scoreDto = createScoreDto(examName, score);
+        ScoreDto scoreDto = new ScoreDto(examName, score);
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
         when(studentRepository.save(any(Student.class))).thenReturn(student);
@@ -164,7 +163,7 @@ public class StudentServiceTest {
         // Arrange
         String examName = "Math";
         Integer score = 95;
-        ScoreDto scoreDto = createScoreDto(examName, score);
+        ScoreDto scoreDto = new ScoreDto(examName, score);
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.empty());
 
@@ -183,7 +182,7 @@ public class StudentServiceTest {
         // Add initial score
         student.addScore(examName, initialScore);
 
-        ScoreDto scoreDto = createScoreDto(examName, newScore);
+        ScoreDto scoreDto = new ScoreDto(examName, newScore);
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
         when(studentRepository.save(any(Student.class))).thenReturn(student);
@@ -290,24 +289,6 @@ public class StudentServiceTest {
         // Assert
         assertNotNull(result);
         assertTrue(result.isEmpty());
-    }
-
-    private ScoreDto createScoreDto(String examName, Integer score) {
-        try {
-            ScoreDto scoreDto = new ScoreDto();
-            // Use reflection to set values since ScoreDto doesn't have setters
-            java.lang.reflect.Field examNameField = ScoreDto.class.getDeclaredField("examName");
-            examNameField.setAccessible(true);
-            examNameField.set(scoreDto, examName);
-
-            java.lang.reflect.Field scoreField = ScoreDto.class.getDeclaredField("score");
-            scoreField.setAccessible(true);
-            scoreField.set(scoreDto, score);
-
-            return scoreDto;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create ScoreDto", e);
-        }
     }
 
 }
