@@ -49,12 +49,12 @@ public class StudentController {
     }
 
     @GetMapping("/quantity/students")
-    public Long countStudentsWithNamesIn(@RequestParam Set<String> names) {
-        return studentService.countStudentsWithNamesIn(names);
+    public Long countStudentsByNames(@RequestParam Set<String> names) {
+        return studentService.countStudentsByNames(names);
     }
 
     @GetMapping("/students/exam/{examName}/minscore/{minScore}")
-    public List<StudentDto> findStudentsByExamNameAndMinScore(@PathVariable String examName, @PathVariable Integer minScore) {
-        return studentService.findStudentsByExamNameAndMinScore(examName, minScore);
+    public List<StudentDto> findStudentsByExamNameMinScore(@PathVariable String examName, @PathVariable Integer minScore) {
+        return studentService.findStudentsByExamNameMinScore(examName, minScore);
     }
 }

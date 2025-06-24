@@ -22,10 +22,10 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Boolean addStudent(StudentCredentialsDto studentCredentialsDto) {
-        if (studentRepository.findById(studentCredentialsDto.getId()).isPresent()) {
+        if (studentRepository.existsById(studentCredentialsDto.getId())) {
             return false;
         }
-        Student student = modelMapper.map(studentCredentialsDto, Student.class);
+        Student student = modelMapper.map( studentCredentialsDto, Student.class);
         studentRepository.save(student);
         return true;
     }
@@ -40,12 +40,16 @@ public class StudentServiceImpl implements StudentService {
     public StudentDto removeStudent(Long id) {
         Student student = studentRepository.findById(id).orElseThrow(NotFoundException::new);
         studentRepository.deleteById(id);
-        return new StudentDto(id, student.getName(), student.getScores());
+        return modelMapper.map(student, StudentDto.class);
     }
 
     @Override
     public StudentCredentialsDto updateStudent(Long id, StudentUpdateDto studentUpdateDto) {
         Student student = studentRepository.findById(id).orElseThrow(NotFoundException::new);
+        /**
+         modelMapper.getConfiguration().setSkipNullEnabled(true);
+         modelMapper.map(studentUpdateDto, student);
+         */
         if (studentUpdateDto.getName() != null) {
             student.setName(studentUpdateDto.getName());
         }
@@ -53,7 +57,7 @@ public class StudentServiceImpl implements StudentService {
             student.setPassword(studentUpdateDto.getPassword());
         }
         studentRepository.save(student);
-        return new StudentCredentialsDto(student.getId(), student.getName(), student.getPassword());
+        return modelMapper.map(student, StudentCredentialsDto.class);
     }
 
     @Override
@@ -67,19 +71,20 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<StudentDto> findStudentsByName(String name) {
         return studentRepository.findByNameIgnoreCase(name)
-                .map(s -> new StudentDto(s.getId(), s.getName(), s.getScores()))
+                .map(student -> modelMapper.map(student, StudentDto.class))
                 .toList();
     }
 
     @Override
-    public Long countStudentsWithNamesIn(Set<String> names) {
-        return studentRepository.countByNameIn(names);
+    public Long countStudentsByNames(Set<String> names) {
+        return studentRepository.countByNameInIgnoreCase(names);
     }
 
     @Override
-    public List<StudentDto> findStudentsByExamNameAndMinScore(String examName, Integer minScore) {
+    public List<StudentDto> findStudentsByExamNameMinScore(String examName, Integer minScore) {
         return studentRepository.findByExamNameAndScoreGreaterThanOrEqual(examName, minScore)
-                .map(s -> new StudentDto(s.getId(), s.getName(), s.getScores()))
+//                .map(s -> new StudentDto(s.getId(), s.getName(), s.getScores()))
+                .map(student -> modelMapper.map(student, StudentDto.class))
                 .toList();
     }
 }
