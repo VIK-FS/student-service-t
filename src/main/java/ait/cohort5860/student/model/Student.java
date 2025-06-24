@@ -2,14 +2,20 @@ package ait.cohort5860.student.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@NoArgsConstructor
 @Getter
 @EqualsAndHashCode(of = "id")
+@Document(collection = "students")
 public class Student {
+    @Id
     private long id;
     @Setter
     private String name;

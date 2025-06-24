@@ -5,6 +5,8 @@ import ait.cohort5860.student.dto.StudentCredentialsDto;
 import ait.cohort5860.student.dto.StudentDto;
 import ait.cohort5860.student.dto.StudentUpdateDto;
 import ait.cohort5860.student.service.StudentService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,9 +14,9 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
+@RequiredArgsConstructor
 public class StudentController {
-    @Autowired
-    private StudentService studentService;
+    private final StudentService studentService;
 
     @PostMapping("/student")
     public Boolean addStudent(@RequestBody StudentCredentialsDto studentCredentialsDto) {
@@ -47,12 +49,12 @@ public class StudentController {
     }
 
     @GetMapping("/quantity/students")
-    public Long countStudentsByNames(@RequestParam Set<String> names) {
-        return studentService.countStudentsByNames(names);
+    public Long countStudentsWithNamesIn(@RequestParam Set<String> names) {
+        return studentService.countStudentsWithNamesIn(names);
     }
 
     @GetMapping("/students/exam/{examName}/minscore/{minScore}")
-    public List<StudentDto> findStudentsByExamNameMinScore(@PathVariable String examName, @PathVariable Integer minScore) {
-        return studentService.findStudentsByExamNameMinScore(examName, minScore);
+    public List<StudentDto> findStudentsByExamNameAndMinScore(@PathVariable String examName, @PathVariable Integer minScore) {
+        return studentService.findStudentsByExamNameAndMinScore(examName, minScore);
     }
 }
